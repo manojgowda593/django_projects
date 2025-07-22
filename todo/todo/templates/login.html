@@ -3,21 +3,48 @@
 <head>
     <title>Login</title>
 </head>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: rgb(101, 138, 170);
+    }
+    #box {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        width: 300px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+
+
 <body>
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        
-        <label>Username:</label>
-        <input type="text" name="username" required>
-        <br><br>
-        
-        <label>Password:</label>
-        <input type="password" name="password" required>
-        <br><br>
-        
-        <button type="submit">Login</button>
-    </form>
+    <div id="box">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <label>Username:</label>
+            <input type="text" name="username" required>
+            <br><br>
+            
+            <label>Password:</label>
+            <input type="password" name="password" required>
+            <br><br>
+            
+            <button type="submit">Login</button>
+        </form>
+    </div>
     
     <p><a href="{% url 'signup' %}">Don't have an account? Sign up</a></p>
 </body>
