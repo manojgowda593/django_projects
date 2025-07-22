@@ -7,7 +7,6 @@
 <style>
     body {
         font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
         margin: 0;
         padding: 0;
         display: flex;
@@ -17,12 +16,16 @@
         background-color: rgb(101, 138, 170);
     }
     #box {
-        background-color: #fff;
+        background-color: lightgrey;
         border: 1px solid #ccc;
-        border-radius: 5px;
+        border-radius: 10px;
         padding: 20px;
         width: 300px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        text-align: center;
+        color: #333;
     }
 </style>
 
@@ -44,8 +47,7 @@
             
             <button type="submit">Login</button>
         </form>
-    </div>
-    
     <p><a href="{% url 'signup' %}">Don't have an account? Sign up</a></p>
+</div>
 </body>
 </html>
