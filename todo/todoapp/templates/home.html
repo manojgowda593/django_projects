@@ -6,6 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    Home page
+    <h2>Home page</h2>
+    <br>
+    {% for todo in Todos %}
+        {{ todo.task }}<br>
+    {% endfor %}
 </body>
 </html>
