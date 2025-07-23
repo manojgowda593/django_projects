@@ -4,12 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
+</head> 
+
+<style>
+    body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #e3f2fd; /* soft blue */
+}
+
+h2 {
+    text-align: center;
+    color: #0d47a1; /* dark blue */
+}
+
+#content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 45px;
+    width: 500px;
+    border: 1px solid #90caf9;
+    border-radius: 5px;
+    padding: 0 22px;
+    color: #1b5e20; /* dark green */
+    background-color: #ffffff;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    margin: 10px auto;
+}
+
+#input {
+    display: flex;
+    height: 60px;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #bbdefb; 
+    width: 650px;
+    margin: 20px auto;
+    padding: 0 10px;
+}
+
+#input input[type="text"] {
+    height: 30px;
+    width: 70%;
+    border-radius: 5px;
+    padding: 0 10px;
+    border: 1px solid #90caf9;
+    background-color: #ffffff;
+    color: #0d47a1;
+}
+
+#input input[type="submit"] {
+    height: 35px;
+    padding: 0 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #1976d2;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#input input[type="submit"]:hover {
+    background-color: #0d47a1;
+}
+
+</style>
+
+
 <body>
-    <h2>Home page</h2>
+    <h2>Todo</h2>
     <br>
-    {% for todo in Todos %}
-        {{ todo.task }}<br>
+
+    <form method="POST" id="input">
+        {% csrf_token %}
+        <input type="text" name="task" placeholder="Add more tasks" required>
+        <input type="submit" value="Add">
+    </form>
+
+    {% for todo in todos %}
+    <div id='content'>
+        <div id='task'> {{ todo.task }} </div> <div id='date'> {{ todo.date }}</div>
+    </div>
     {% endfor %}
+    
 </body>
 </html>
