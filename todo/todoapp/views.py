@@ -30,7 +30,11 @@ def login(request):
         return render(request,'login.html')
     
 def home(request):
-    # tasks_html = ''
-    # for todo in todos:
-    #     tasks_html+=f'{todo['task']}'
-    return render(request,'home.html',{'todos':Todos})
+    if request.method =='POST':
+        task = request.POST.get('task')
+        if task:
+            Todos.objects.create(task=task)
+            return redirect('home')
+
+    todos = Todos.objects.all()
+    return render(request,'home.html',{'todos':todos})
