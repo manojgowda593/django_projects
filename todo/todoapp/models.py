@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Todos(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE,todoapp/admin.py)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
     task= models.CharField(max_length=100)
     date=models.DateField(auto_now_add=True)
 

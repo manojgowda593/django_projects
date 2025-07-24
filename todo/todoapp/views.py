@@ -3,6 +3,8 @@ from .form import Signup
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from .models import Todos
+from django.contrib.auth.decorators import login_required
+
 
 
 def signup(request):
@@ -31,7 +33,7 @@ def login(request):
     else:
         return render(request,'login.html')
     
-
+@login_required
 def home(request):
     if request.method =='POST':
         task = request.POST.get('task')
