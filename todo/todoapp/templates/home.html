@@ -72,6 +72,10 @@ h2 {
     background-color: #0d47a1;
 }
 
+#delete {
+    display: flex;
+
+}
 </style>
 
 
@@ -88,6 +92,10 @@ h2 {
     {% for todo in todos %}
     <div id='content'>
         <div id='task'> {{ todo.task }} </div> <div id='date'> {{ todo.date }}</div>
+        <form id='delete' method='POST' action="{% url 'delete' todo.id %}">
+            {% csrf_token %} 
+            <button type='submit'>Delete</button>
+        </form>
     </div>
     {% endfor %}
     
