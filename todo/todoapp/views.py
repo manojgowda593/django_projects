@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from .models import Todos
 
+
 def signup(request):
     if request.method=='POST':
         form = Signup(request.POST)
@@ -14,6 +15,7 @@ def signup(request):
     else:
         form = Signup(request.POST)
         return render(request,'signup.html',{'form':form})
+    
 
 def login(request):
     if request.method=='POST':
@@ -29,15 +31,17 @@ def login(request):
     else:
         return render(request,'login.html')
     
+
 def home(request):
     if request.method =='POST':
         task = request.POST.get('task')
         if task:
-            Todos.objects.create(task=task)
+            Todos.objects.create(user=request.user,task=task)
             return redirect('home')
-
-    todos = Todos.objects.all()
+        
+    todos = Todos.objects.filter(user=request.user)
     return render(request,'home.html',{'todos':todos})
+
 
 def delete(request,id):
     if request.method == 'POST':
