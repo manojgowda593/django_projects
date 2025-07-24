@@ -38,3 +38,10 @@ def home(request):
 
     todos = Todos.objects.all()
     return render(request,'home.html',{'todos':todos})
+
+def delete(request,id):
+    if request.method == 'POST':
+        Todos.objects.get(id=id).delete()
+        return redirect('home')
+    return redirect('home')
+   
