@@ -54,7 +54,6 @@ def delete(request,id):
    
 
 def logoutk_view(request):
-def logoutk_view(request):
     logout(request)
     return redirect('login')
     
