@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from .models import Todos
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 
 
@@ -51,3 +52,9 @@ def delete(request,id):
         return redirect('home')
     return redirect('home')
    
+
+def logoutk_view(request):
+def logoutk_view(request):
+    logout(request)
+    return redirect('login')
+    

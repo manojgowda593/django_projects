@@ -1,103 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head> 
-
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home</title>
+  <style>
     body {
-    padding: 0;
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #e3f2fd; /* soft blue */
-}
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: black;
+      color: #e0e0e0;
+    }
 
-h2 {
-    text-align: center;
-    color: #0d47a1; /* dark blue */
-}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 650px;
+      margin: 20px auto 0 auto;
+      padding: 0 10px;
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      height: 50px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
 
-#content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 45px;
-    width: 500px;
-    border: 1px solid #90caf9;
-    border-radius: 5px;
-    padding: 0 22px;
-    color: #1b5e20; /* dark green */
-    background-color: #ffffff;
-    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
-    margin: 10px auto;
-}
+    .topbar h2 {
+      font-size: 18px;
+      margin: 0;
+      color: #90caf9;
+    }
 
-#input {
-    display: flex;
-    height: 60px;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 10px;
-    background-color: #bbdefb; 
-    width: 650px;
-    margin: 20px auto;
-    padding: 0 10px;
-}
+    #logout {
+      padding: 4px 10px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: none;
+      background-color: #1976d2;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-#input input[type="text"] {
-    height: 30px;
-    width: 70%;
-    border-radius: 5px;
-    padding: 0 10px;
-    border: 1px solid #90caf9;
-    background-color: #ffffff;
-    color: #0d47a1;
-}
+    #logout:hover {
+      background-color: #0d47a1;
+    }
 
-#input input[type="submit"] {
-    height: 35px;
-    padding: 0 20px;
-    border-radius: 5px;
-    border: none;
-    background-color: #1976d2;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+    #input {
+      display: flex;
+      height: 60px;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 10px;
+      background-color: #1e1e1e;
+      width: 650px;
+      margin: 20px auto;
+      padding: 0 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
 
-#input input[type="submit"]:hover {
-    background-color: #0d47a1;
-}
+    #input input[type="text"] {
+      height: 30px;
+      width: 70%;
+      border-radius: 5px;
+      padding: 0 10px;
+      border: 1px solid #424242;
+      background-color: #2c2c2c;
+      color: #e0e0e0;
+    }
 
-#delete {
-    display: flex;
+    #input input[type="submit"] {
+      height: 35px;
+      padding: 0 20px;
+      border-radius: 5px;
+      border: none;
+      background-color: #1976d2;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-}
-</style>
+    #input input[type="submit"]:hover {
+      background-color: #0d47a1;
+    }
 
+    #content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 45px;
+      width: 500px;
+      border: 1px solid #424242;
+      border-radius: 5px;
+      padding: 0 22px;
+      color: #bbdefb;
+      background-color: #1e1e1e;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      margin: 10px auto;
+    }
 
+    #delete {
+      display: flex;
+    }
+
+    #delete button {
+      padding: 4px 10px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: none;
+      background-color: #d32f2f;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #delete button:hover {
+      background-color: #b71c1c;
+    }
+  </style>
+</head>
 <body>
+
+  <div class="topbar">
     <h2>Welcome {{ request.user|capfirst }}</h2>
-    <br>
-
-    <form method="POST" id="input">
-        {% csrf_token %}
-        <input type="text" name="task" placeholder="Add more tasks" required>
-        <input type="submit" value="Add">
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" id="logout" name="logout">Logout</button>
     </form>
+  </div>
 
-    {% for todo in todos %}
-    <div id='content'>
-        <div id='task'> {{ todo.task }} </div> <div id='date'> {{ todo.date }}</div>
-        <form id='delete' method='POST' action="{% url 'delete' todo.id %}">
-            {% csrf_token %} 
-            <button type='submit'>Delete</button>
-        </form>
+  <form method="POST" id="input">
+    {% csrf_token %}
+    <input type="text" name="task" placeholder="Add more tasks" required />
+    <input type="submit" value="Add" />
+  </form>
+
+  {% for todo in todos %}
+    <div id="content">
+      <div id="task">{{ todo.task }}</div>
+      <div id="date">{{ todo.date }}</div>
+      <form id="delete" method="POST" action="{% url 'delete' todo.id %}">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+      </form>
     </div>
-    {% endfor %}
-    
+  {% endfor %}
+
 </body>
 </html>
