@@ -1,0 +1,60 @@
+name: todo cicd
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'todo/**'
+
+jobs:
+    build-scan-push_CI:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v3
+
+            - name: docker login
+              run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+            - name: docker build
+              run: docker build \
+                --build-arg DB_ENGINE="${{ secrets.DB_ENGINE }}" \
+                --build-arg DB_USER="${{ secrets.DB_USER }}" \
+                --build-arg DB_NAME="${{ secrets.DB_NAME }}" \
+                --build-arg DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+                --build-arg DB_PORT="${{ secrets.DB_PORT }}" \
+                --build-arg DB_HOST="${{ secrets.DB_HOST}}" \
+                -t ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }} \
+                django-projects/todo/. 
+            
+            - name: Scan Docker image using Trivy 
+              uses: aquasecurity/trivy-action@master
+              with:
+                image-ref: '${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}'
+                format: 'table'
+                exit-code: '1'       
+                severity: 'CRITICAL,HIGH'
+              continue-on-error: false
+            
+            - name: docker push 
+              run: docker push ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha}}
+            
+    Deploy:
+        runs-on: ubuntu-latest
+        steps: 
+            - name: login to server(ec2)
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USERNAME }}
+                key: ${{ secrets.EC2_SSH_KEY }}
+                script: |
+                    cd workspace/todo
+                    echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+                    docker pull ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
+                    docker compose stop todo-web
+                    docker compose rm -f todo-web
+                    docker compose up -d todo-web
+                    docker image prune -af
+
