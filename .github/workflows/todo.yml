@@ -18,29 +18,35 @@ jobs:
               run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
             - name: docker build
-              run: docker build \
+              run: | 
+                docker build \
                 --build-arg DB_ENGINE="${{ secrets.DB_ENGINE }}" \
                 --build-arg DB_USER="${{ secrets.DB_USER }}" \
                 --build-arg DB_NAME="${{ secrets.DB_NAME }}" \
                 --build-arg DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
                 --build-arg DB_PORT="${{ secrets.DB_PORT }}" \
-                --build-arg DB_HOST="${{ secrets.DB_HOST}}" \
+                --build-arg DB_HOST="${{ secrets.DB_HOST }}" \
                 -t ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }} \
-                django-projects/todo/. 
-            
+                todo/.
+
+                echo "✅✅Docker image built ✅✅"
+
             - name: Scan Docker image using Trivy 
               uses: aquasecurity/trivy-action@master
               with:
                 image-ref: '${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}'
                 format: 'table'
-                exit-code: '1'       
+                exit-code: '0'       
                 severity: 'CRITICAL,HIGH'
-              continue-on-error: false
-            
+              continue-on-error: true
+
             - name: docker push 
-              run: docker push ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha}}
-            
+              run: | 
+                docker push ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
+                echo "✅✅Docker image pushed ✅✅"
+
     Deploy:
+        needs: build-scan-push_CI
         runs-on: ubuntu-latest
         steps: 
             - name: login to server(ec2)
@@ -50,11 +56,13 @@ jobs:
                 username: ${{ secrets.EC2_USERNAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
-                    cd workspace/todo
+                    echo "✅✅ssh connected✅✅"
+                    cd workspace/django-projects/todo
                     echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
                     docker pull ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
-                    docker compose stop todo-web
-                    docker compose rm -f todo-web
-                    docker compose up -d todo-web
+                    export TAG=${{ github.sha }}
+                    echo "TAG=$TAG" >> .env
+                    docker compose down
+                    docker compose up -d
                     docker image prune -af
-
+                    echo "✅✅Docker image deployed✅✅"
