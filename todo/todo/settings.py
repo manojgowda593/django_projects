@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure--&@#bv#jj41-u&grqt#je*cakw4@xnma+m)ywx6qv*h)$6b*ln
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["13.201.6.252"]
+ALLOWED_HOSTS = ["13.201.6.252", "localhost", "127.0.0.1"]
 
 LOGIN_URL = 'login'
 
