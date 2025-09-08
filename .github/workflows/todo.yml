@@ -45,24 +45,22 @@ jobs:
                 docker push ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
                 echo "✅✅Docker image pushed ✅✅"
 
-    Deploy:
-        needs: build-scan-push_CI
-        runs-on: ubuntu-latest
-        steps: 
-            - name: login to server(ec2)
-              uses: appleboy/ssh-action@master
-              with:
-                host: ${{ secrets.EC2_HOST }}
-                username: ${{ secrets.EC2_USERNAME }}
-                key: ${{ secrets.EC2_SSH_KEY }}
-                script: |
-                    echo "✅✅ssh connected✅✅"
-                    cd workspace/django-projects/todo
-                    echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-                    docker pull ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
-                    export TAG=${{ github.sha }}
-                    echo "TAG=$TAG" >> .env
-                    docker compose down
-                    docker compose up -d
-                    docker image prune -af
-                    echo "✅✅Docker image deployed✅✅"
+    deploy:
+      runs-on: ubuntu-latest
+      steps: 
+        - name: checkout code
+          uses: actions/checkout
+
+        - name: aws configuration
+          uses: aws-action/configure-aws-credintionals@v4 
+          with:
+            aws-access-key-id: alsjf
+            aws-secret-access_key: secrets.
+            aws-region: ap-south-1
+
+        - name: Terraform infra creation 
+          run: | 
+            cd ecs_prod
+            terraform init
+            terraform plan -auto-approve
+            terraform apply -auto-approve 
