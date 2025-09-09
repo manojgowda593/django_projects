@@ -16,9 +16,19 @@ resource "aws_subnet" "public_sub" {
   }
 }
 
-resource "aws_subnet" "private_sub_1" {
+resource "aws_subnet" "public_sub_2" {
   vpc_id = aws_vpc.todo-vpc.id
   cidr_block = "10.0.2.0/24"
+  availability_zone = "ap-south-1b"
+
+  tags = {
+    Name = "public_subnet_ecs_todo_2"
+  }
+}
+
+resource "aws_subnet" "private_sub_1" {
+  vpc_id = aws_vpc.todo-vpc.id
+  cidr_block = "10.0.3.0/24"
   availability_zone = "ap-south-1a"
 
   tags = {
@@ -28,7 +38,7 @@ resource "aws_subnet" "private_sub_1" {
 
 resource "aws_subnet" "private_sub_2" {
   vpc_id = aws_vpc.todo-vpc.id
-  cidr_block = "10.0.3.0/24"
+  cidr_block = "10.0.4.0/24"
   availability_zone = "ap-south-1b"
 
   tags = {
@@ -103,6 +113,43 @@ resource "aws_route_table_association" "private_subnet_asso" {
 
 # Security group
 
+resource "aws_security_group" "alb_sg" {
+  name = "alb_security_group"
+  description = "For ALB (public)"
+  vpc_id = aws_vpc.todo-vpc.id
+  tags = {
+    Name = "alb_sg"
+  }
+}
+
+resource "aws_security_group_rule" "alb_allow_80" {
+  type = "ingress"
+  security_group_id = aws_security_group.alb_sg.id
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port = 80
+  protocol = "tcp"
+  to_port = 80
+}
+
+resource "aws_security_group_rule" "all_out_alb" {
+  security_group_id = aws_security_group.alb_sg.id
+  type = "egress"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port = 0
+  to_port = 0
+  protocol = "-1"
+}
+
+# resource "aws_security_group_rule" "alb_allow_8000" {
+#   type = "ingress"
+#   security_group_id = aws_security_group.alb_sg.id
+#   cidr_blocks = ["0.0.0.0/0"]
+#   from_port = 8000
+#   protocol = "tcp"
+#   to_port = 8000
+# }
+
+
 resource "aws_security_group" "ecs_sg" {
   name = "ecs_security group"
   description = "For ecs (public)"
@@ -116,16 +163,25 @@ resource "aws_security_group" "ecs_sg" {
 resource "aws_security_group_rule" "public_80" {
   type = "ingress"
   security_group_id = aws_security_group.ecs_sg.id
-  cidr_blocks = ["0.0.0.0/0"]
+  source_security_group_id = aws_security_group.alb_sg.id
   from_port = 80
   protocol = "tcp"
   to_port = 80
 }
 
+resource "aws_security_group_rule" "public_443" {
+  type = "ingress"
+  security_group_id = aws_security_group.ecs_sg.id
+  source_security_group_id = aws_security_group.alb_sg.id
+  from_port = 443
+  protocol = "tcp"
+  to_port = 443
+}
+
 resource "aws_security_group_rule" "public_8000" {
   type = "ingress"
   security_group_id = aws_security_group.ecs_sg.id
-  cidr_blocks = ["0.0.0.0/0"]
+  source_security_group_id = aws_security_group.alb_sg.id
   from_port = 8000
   protocol = "tcp"
   to_port = 8000

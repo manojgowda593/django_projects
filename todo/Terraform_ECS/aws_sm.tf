@@ -9,6 +9,7 @@ resource "aws_secretsmanager_secret_version" "db_secreat_vlaue" {
     password = var.db_password
     db = var.db_db
     port = 5432
+    engine = "django.db.backends.postgresql"
     server_name = aws_db_instance.mydb.address
   })
   depends_on = [aws_db_instance.mydb]

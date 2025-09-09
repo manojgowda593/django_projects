@@ -12,3 +12,4 @@ variable "db_db" {
   type = string
   default = "my_todo_db"
 }
+
