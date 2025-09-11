@@ -1,7 +1,7 @@
 resource "aws_alb" "todo-alb" {
   name = "todo-alb"
   subnets = [aws_subnet.public_sub.id, aws_subnet.public_sub_2.id]
-  security_groups = [aws_security_group.ecs_sg.id]
+  security_groups = [aws_security_group.alb_sg.id]
 
   tags = {
     Name = "todo-alb"
@@ -14,6 +14,15 @@ resource "aws_lb_target_group" "todo_target_group" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.todo-vpc.id
+
+  health_check {
+    path                = "/health/"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb_listener" "todo-listener" {
