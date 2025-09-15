@@ -49,18 +49,27 @@ jobs:
       runs-on: ubuntu-latest
       steps: 
         - name: checkout code
-          uses: actions/checkout
+          uses: actions/checkout@v3
 
         - name: aws configuration
-          uses: aws-action/configure-aws-credintionals@v4 
+          uses: aws-actions/configure-aws-credentials@v4
+
           with:
-            aws-access-key-id: alsjf
-            aws-secret-access_key: secrets.
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ap-south-1
+
 
         - name: Terraform infra creation 
           run: | 
             cd ecs_prod
             terraform init
-            terraform plan -auto-approve
-            terraform apply -auto-approve 
+            terraform plan \
+              -var "docker_username=${{ secrets.DOCKER_USERNAME }}" \
+              -var "image_name=${{ secrets.IMAGE_NAME }}" \
+              -var "image_tag=${{ github.sha }}" \
+              -var "db_username=${{ secrets.DB_USER }}" \
+              -var "db_password=${{ secrets.DB_PASSWORD }}" \
+              -var "db_db=${{ secrets.DB_NAME }}" \
+              -out=tfplan
+            terraform apply -auto-approve tfplan

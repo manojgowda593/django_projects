@@ -19,7 +19,7 @@ resource "aws_ecs_task_definition" "todo-task" {
   container_definitions = jsonencode([
     {
       name      = "todo"
-      image     = "manoj1593/ecs-todo:latest"
+      image     = "${var.docker_username}/${var.image_name}:${var.image_tag}"
       essential = true
       portMappings = [
         {

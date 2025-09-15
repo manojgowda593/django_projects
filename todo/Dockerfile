@@ -2,13 +2,26 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ARG DB_ENGINE
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_PORT
+
+ENV DB_ENGINE=${DB_ENGINE}
+ENV DB_NAME=${DB_NAME}    
+ENV DB_USER=${DB_USER}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_HOST=${DB_HOST}
+ENV DB_PORT=${DB_PORT}
+
 COPY . .
 
-RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
 RUN chmod +x runscript.sh
 
-CMD ["bash", "./runscript.sh"]
+CMD ["./runscript.sh"]

@@ -1,16 +1,26 @@
 variable "db_username" {
   type = string
-  default = "manoj"
 }
 
 variable "db_password" {
   type = string
-  default = "Manoj#123!"
+  sensitive = true
+
 }
 
 variable "db_db" {
   type = string
-  default = "my_todo_db"
 }
 
- 
+variable "docker_username" {
+  type = string
+}
+
+variable "image_name" {
+  type = string
+}
+
+variable "image_tag" {
+  type    = string
+  default = "latest"
+}
