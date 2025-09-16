@@ -73,3 +73,4 @@ jobs:
               -var "db_db=${{ secrets.DB_NAME }}" \
               -out=tfplan
             terraform apply -auto-approve tfplan
+            terraform destroy -auto-approve
