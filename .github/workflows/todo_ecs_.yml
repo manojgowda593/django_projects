@@ -35,7 +35,7 @@ jobs:
 
             - name: docker push 
               run: | 
-                docker push ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
+                docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
                 echo "✅✅Docker image pushed ✅✅"
 
     deploy:
