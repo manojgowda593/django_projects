@@ -56,7 +56,7 @@ jobs:
 
         - name: Terraform infra creation 
           run: | 
-            cd todo/Terraoform_ECS
+            cd todo/Terraform_ECS
             terraform init
             terraform plan \
               -var "docker_username=${{ secrets.DOCKER_USERNAME }}" \
