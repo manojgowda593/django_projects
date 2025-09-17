@@ -3,9 +3,9 @@ name: todo cicd
 on:
     push:
         branches:
-            - cicd-test
-        # paths:
-        #     - 'todo/**'
+            - Terraform
+        paths:
+            - 'todo/**'
 
 jobs:
     build-scan-push_CI:
@@ -73,4 +73,3 @@ jobs:
               -var "db_db=${{ secrets.DB_NAME }}" \
               -out=tfplan
             terraform apply -auto-approve tfplan
-            # terraform destroy -auto-approve
