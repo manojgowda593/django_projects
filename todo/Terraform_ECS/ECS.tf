@@ -57,6 +57,7 @@ resource "aws_ecs_task_definition" "todo-task" {
         }
       ]
 
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
