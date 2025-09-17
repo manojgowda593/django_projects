@@ -9,18 +9,20 @@ resource "aws_ecs_cluster" "todo-cluster" {
 
 
 resource "aws_ecs_task_definition" "todo-task" {
-  family = "todo-task-definition"
+  family                   = "todo-task-definition"
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
-  task_role_arn      = aws_iam_role.ecsTaskRole.arn
+  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  task_role_arn            = aws_iam_role.ecsTaskRole.arn
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
+
   container_definitions = jsonencode([
     {
       name      = "todo"
       image     = "${var.docker_username}/${var.image_name}:${var.image_tag}"
       essential = true
+
       portMappings = [
         {
           containerPort = 8000
@@ -29,33 +31,41 @@ resource "aws_ecs_task_definition" "todo-task" {
         }
       ]
       secrets = [
-  {
-    name      = "DB_USER"
-    valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:username::"
-  },
-  {
-    name      = "DB_ENGINE"
-    valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:engine::"
-  },
-  {
-    name      = "DB_PASSWORD"
-    valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:password::"
-  },
-  {
-    name      = "DB_NAME"
-    valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:db::"
-  },
-  {
-    name      = "DB_HOST"
-    valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:server_name::"
-  },
-  {
-    name      = "DB_PORT"
-    valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:port::"
-  }
-]
+        {
+          name      = "DB_USER"
+          valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:username::"
+        },
+        {
+          name      = "DB_ENGINE"
+          valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:engine::"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:password::"
+        },
+        {
+          name      = "DB_NAME"
+          valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:db::"
+        },
+        {
+          name      = "DB_HOST"
+          valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:server_name::"
+        },
+        {
+          name      = "DB_PORT"
+          valueFrom = "${aws_secretsmanager_secret.todo_db_secrets.arn}:port::"
+        }
+      ]
 
-    },
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/todo"
+          awslogs-region        = "ap-south-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+    }
   ])
 }
 
