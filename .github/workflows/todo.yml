@@ -57,7 +57,7 @@ jobs:
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
                     echo "✅✅ssh connected✅✅"
-                    cd workspace/django-projects/todo
+                    cd workspace/django_projects/todo
                     echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
                     docker pull ${{ secrets.DOCKER_USERNAME }}/todo-web:${{ github.sha }}
                     export TAG=${{ github.sha }}
