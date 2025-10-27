@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Trigger Check') {
+            steps {
+                echo "🚀 Jenkins CI/CD pipeline triggered successfully!"
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "✅ Pipeline finished (success or failure)"
+        }
+        success {
+            echo "🎉 Jenkins CI/CD trigger working fine!"
+        }
+        failure {
+            echo "❌ Something went wrong, check configuration."
+        }
+    }
+}
